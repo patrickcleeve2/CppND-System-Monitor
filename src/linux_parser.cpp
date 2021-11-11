@@ -131,12 +131,12 @@ vector<string> LinuxParser::CpuUtilization() {
 
   std::ifstream filestream(kProcDirectory + kStatFilename);
   if (filestream.is_open()) {
-    // std::cout << "CPU OPEN\n";
     while (std::getline(filestream, line)) {
       std::istringstream linestream(line);
       while (linestream >> key >> value) {
-        if (key == "cpu") {
-          // std::cout << key <<": "<< value << std::endl;
+
+        // get all cpus, first line is aggregate
+        if ((key.find("cpu") != string::npos)) {
           cpu.push_back(line);
         }
       }
