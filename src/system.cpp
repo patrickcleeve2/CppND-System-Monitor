@@ -37,6 +37,10 @@ vector<Process>& System::Processes() {
     System::processes_.emplace_back(process);
   }
 
+    // sort the processess based on RAM usage
+    std::sort(processes_.begin(), processes_.end(), std::greater<Process>());
+
+
   return processes_;
 }
 
