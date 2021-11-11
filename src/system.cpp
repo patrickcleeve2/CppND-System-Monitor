@@ -6,6 +6,7 @@
 #include <set>
 #include <string>
 #include <vector>
+#include <iostream>
 
 #include "linux_parser.h"
 #include "process.h"
@@ -22,11 +23,32 @@ system."
 You need to properly format the uptime. Refer to the comments mentioned in
 format. cpp for formatting the uptime.*/
 
-// TODO: Return the system's CPU
+// Return the system's CPU
 Processor& System::Cpu() { return cpu_; }
 
 // TODO: Return a container composed of the system's processes
-vector<Process>& System::Processes() { return processes_; }
+vector<Process>& System::Processes() { 
+
+    auto pids = LinuxParser::Pids();
+
+    // std::cout << "N_PID: " << pids.size() << std::endl;
+    for (auto& pid: pids) {
+        // std::cout << pid << std::endl;
+
+        // Constructor wtih pid messess it up?
+        Process process;
+        process.pid_ = pid; // why does this work, but setting in constructor doesnt...
+        
+
+
+        System::processes_.emplace_back(process);
+
+    }    
+    
+    
+    return processes_; 
+    
+}
 
 // Return the system's kernel identifier (string)
 std::string System::Kernel() { return LinuxParser::Kernel(); }
