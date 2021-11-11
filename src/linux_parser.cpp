@@ -110,17 +110,17 @@ long LinuxParser::UpTime() {
   return uptime;
 }
 
-// TODO: Read and return the number of jiffies for the system
+// Read and return the number of jiffies for the system
 long LinuxParser::Jiffies() { return 0; }
 
-// TODO: Read and return the number of active jiffies for a PID
+// Read and return the number of active jiffies for a PID
 // REMOVE: [[maybe_unused]] once you define the function
 long LinuxParser::ActiveJiffies(int pid [[maybe_unused]]) { return 0; }
 
-// TODO: Read and return the number of active jiffies for the system
+// Read and return the number of active jiffies for the system
 long LinuxParser::ActiveJiffies() { return 0; }
 
-// TODO: Read and return the number of idle jiffies for the system
+// Read and return the number of idle jiffies for the system
 long LinuxParser::IdleJiffies() { return 0; }
 
 // Read and return CPU utilization
@@ -268,9 +268,9 @@ string LinuxParser::User(int pid) {
 }
 
 // Read and return the uptime of a process
-long LinuxParser::UpTime(int pid [[maybe_unused]]) { 
+long LinuxParser::UpTime(int pid) { 
   
-  long uptime_ticks; // clock ticks
+  long startime; // clock ticks
   long uptime; // sec
   string line;
 
@@ -289,8 +289,8 @@ long LinuxParser::UpTime(int pid [[maybe_unused]]) {
       }
 
         // starttime (22) ref: https://man7.org/linux/man-pages/man5/proc.5.html
-        uptime_ticks = std::stoi(result[21]);
-        uptime = uptime_ticks / sysconf(_SC_CLK_TCK); // TODO: dont think this is correct
+        startime = std::stoi(result[21]);
+        uptime = LinuxParser::UpTime() - (startime / sysconf(_SC_CLK_TCK));
     }
   }
   

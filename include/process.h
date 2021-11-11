@@ -19,7 +19,6 @@ class Process {
 
   void setPid(int pid);
 
-  // TODO: Declare any necessary private members
  private:
   int pid_;
 };
