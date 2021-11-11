@@ -3,10 +3,10 @@
 #include <unistd.h>
 
 #include <cstddef>
+#include <iostream>
 #include <set>
 #include <string>
 #include <vector>
-#include <iostream>
 
 #include "linux_parser.h"
 #include "process.h"
@@ -26,28 +26,18 @@ format. cpp for formatting the uptime.*/
 // Return the system's CPU
 Processor& System::Cpu() { return cpu_; }
 
-// TODO: Return a container composed of the system's processes
-vector<Process>& System::Processes() { 
+// Return a container composed of the system's processes
+vector<Process>& System::Processes() {
+  auto pids = LinuxParser::Pids();
 
-    auto pids = LinuxParser::Pids();
+  for (auto& pid : pids) {
+    Process process;
+    process.setPid(
+        pid);  // TODO: why can't I define the pid as part of the constructor?
+    System::processes_.emplace_back(process);
+  }
 
-    // std::cout << "N_PID: " << pids.size() << std::endl;
-    for (auto& pid: pids) {
-        // std::cout << pid << std::endl;
-
-        // Constructor wtih pid messess it up?
-        Process process;
-        process.pid_ = pid; // why does this work, but setting in constructor doesnt...
-        
-
-
-        System::processes_.emplace_back(process);
-
-    }    
-    
-    
-    return processes_; 
-    
+  return processes_;
 }
 
 // Return the system's kernel identifier (string)
