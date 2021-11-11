@@ -55,7 +55,7 @@ float Process::CpuUtilization() const {
       float total_time = utime + stime + cutime + cstime;  // include children
       float seconds =
           LinuxParser::UpTime() - (starttime / sysconf(_SC_CLK_TCK));
-      float cpu_utilisation = (total_time / sysconf(_SC_CLK_TCK)) / seconds;
+      cpu_utilisation = (total_time / sysconf(_SC_CLK_TCK)) / seconds;
     }
   }
 
