@@ -7,7 +7,6 @@
 #include <sstream>
 #include <string>
 #include <vector>
-#include <unistd.h>
 
 using std::stof;
 using std::string;
@@ -110,19 +109,6 @@ long LinuxParser::UpTime() {
   return uptime;
 }
 
-// Read and return the number of jiffies for the system
-long LinuxParser::Jiffies() { return 0; }
-
-// Read and return the number of active jiffies for a PID
-// REMOVE: [[maybe_unused]] once you define the function
-long LinuxParser::ActiveJiffies(int pid [[maybe_unused]]) { return 0; }
-
-// Read and return the number of active jiffies for the system
-long LinuxParser::ActiveJiffies() { return 0; }
-
-// Read and return the number of idle jiffies for the system
-long LinuxParser::IdleJiffies() { return 0; }
-
 // Read and return CPU utilization
 vector<string> LinuxParser::CpuUtilization() {
   string line;
@@ -208,8 +194,12 @@ string LinuxParser::Ram(int pid) {
     while (std::getline(filestream, line)) {
       std::istringstream linestream(line);
       while (linestream >> key >> value) {
-        if (key == "VmSize:") {
-          return value;
+        // NB: Using VmRSS instead of VmSize at direction of reviewer. VmRSS is
+        // the exact physical memory, instead of virtual memory
+        if (key == "VmRSS:") {
+          // Convert kB to MB / 1024;
+          // Limit number of decimal places
+          return std::to_string(std::stoi(value) / 1024.0).substr(0, 5);
         }
       }
     }
@@ -268,10 +258,9 @@ string LinuxParser::User(int pid) {
 }
 
 // Read and return the uptime of a process
-long LinuxParser::UpTime(int pid) { 
-  
-  long startime; // clock ticks
-  long uptime; // sec
+long LinuxParser::UpTime(int pid) {
+  long startime;  // clock ticks
+  long uptime;    // sec
   string line;
 
   std::ifstream filestream(kProcDirectory + to_string(pid) + kStatFilename);
@@ -288,12 +277,11 @@ long LinuxParser::UpTime(int pid) {
         result.push_back(word);
       }
 
-        // starttime (22) ref: https://man7.org/linux/man-pages/man5/proc.5.html
-        startime = std::stoi(result[21]);
-        uptime = LinuxParser::UpTime() - (startime / sysconf(_SC_CLK_TCK));
+      // starttime (22) ref: https://man7.org/linux/man-pages/man5/proc.5.html
+      startime = std::stoi(result[21]);
+      uptime = LinuxParser::UpTime() - (startime / sysconf(_SC_CLK_TCK));
     }
   }
-  
-  return uptime;  
-  
-  }
+
+  return uptime;
+}

@@ -32,15 +32,16 @@ vector<Process>& System::Processes() {
   auto pids = LinuxParser::Pids();
 
   for (auto& pid : pids) {
-    Process process;
-    process.setPid(
-        pid);  // TODO: why can't I define the pid as part of the constructor?
-    System::processes_.emplace_back(process);
+    // only add processes with command and ram data
+    if (LinuxParser::Command(pid) != "" && LinuxParser::Ram(pid) != "") {
+      Process process;
+      process.setPid(pid);
+      System::processes_.emplace_back(process);
+    }
   }
 
-    // sort the processess based on RAM usage
-    std::sort(processes_.begin(), processes_.end(), std::greater<Process>());
-
+  // sort the processess based on cpu usage
+  std::sort(processes_.begin(), processes_.end(), std::greater<Process>());
 
   return processes_;
 }

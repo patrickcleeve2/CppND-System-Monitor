@@ -76,14 +76,14 @@ long int Process::UpTime() { return LinuxParser::UpTime(Process::Pid()); }
 
 // Overload the "less than" comparison operator for Process objects
 bool Process::operator<(Process const& a) const {
-  return Process::CpuUtilization() < a.CpuUtilization() ? true : false;
-  //   return std::stoi(Process::Ram()) < std::stoi(a.Ram()) ? true : false;
+  return Process::CpuUtilization() < a.CpuUtilization();
+  //   return std::stoi(Process::Ram()) < std::stoi(a.Ram());
 }
 
 // Overload the "greater than" comparison operator for Process objects
 bool Process::operator>(Process const& a) const {
-  return Process::CpuUtilization() < a.CpuUtilization() ? true : false;
-  //   return std::stoi(Process::Ram()) > std::stoi(a.Ram()) ? true : false;
+  return Process::CpuUtilization() < a.CpuUtilization();
+  //   return std::stoi(Process::Ram()) > std::stoi(a.Ram());
 }
 
 // Set the process pid
